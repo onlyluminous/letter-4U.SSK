@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>给你的一封情书</title>
+    <link rel="preload" href="style.css" as="style">
+    <link rel="preload" href="script.js" as="script">
+    <link rel="preload" href="background-music.mp3" as="audio">
+    <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+    <link rel="stylesheet" href="style.css">
+    <meta name="description" content="一封充满爱意的电子情书">
+    <meta name="theme-color" content="#ff69b4">
+</head>
+<body>
+    <div class="floating-hearts"></div>
+    <div class="music-control" id="musicControl">
+        <i>♫</i>
+    </div>
+    <audio id="bgMusic" loop>
+        <source src="background-music.mp3" type="audio/mpeg">
+    </audio>
+    <div class="backup-play-button" id="backupPlayButton">点击播放音乐</div>
+    <div class="container">
+        <div class="heart" id="mainHeart"></div>
+        <div id="content-stage-1" class="content-stage active">
+            <div class="message-container">
+                <div class="message show" id="message1">亲爱的，我想对你说</div>
+                <div class="message show" id="message2">遇见你是我最大的幸运</div>
+                <div class="message show" id="message3">你的笑容让我的世界充满阳光</div>
+                <div class="message show" id="message4">我真的很喜欢你</div>
+                <div class="message show" id="message5">每一天都因为有你而变得更美好</div>
+                <div class="message show" id="message6">做我女朋友好吗？</div>
+            </div>
+        </div>
+        
+        <div id="content-stage-2" class="content-stage">
+            <div class="message-container">
+                <div class="message show">
+                    <h2>【温暖陪伴版】</h2>
+                    <p>你将拥有：</p>
+                    <ol class="privilege-list">
+                        <li>失眠时的专属睡前故事点播台</li>
+                        <li>火锅蘸料调配师资格证（芝麻酱+花生碎+香菜特调）</li>
+                        <li>智能天气预报员（附带提醒带伞/涂防晒功能）</li>
+                        <li>跨时区人工闹钟服务（支持自定义唤醒铃声）</li>
+                        <li>人生游戏永久VIP账号（附赠无限复活币）</li>
+                    </ol>
+                </div>
+                <div class="message show">
+                    <h2>【成长向补充】</h2>
+                    <p>我们可以：</p>
+                    <ul class="growth-list">
+                        <li>→ 互相当对方的夸夸团团长</li>
+                        <li>→ 在深夜哲学辩论中更新世界观</li>
+                        <li>→ 开发只属于两个人的火星语词典</li>
+                        <li>→ 把失败经历做成错题集共同批注</li>
+                        <li>→ 建一座记忆博物馆收藏彩虹碎片</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div id="content-stage-3" class="content-stage">
+            <div class="message-container">
+                <div class="message show">
+                    <h2>【理性条款版】</h2>
+                    <p>根据《恋爱公约》第520条，您将享有：</p>
+                    <ul class="agreement-list">
+                        <li>✓ 情绪波动优先响应权</li>
+                        <li>✓ 奇怪笑点无限包容卡</li>
+                        <li>✓ 个人空间自主申领证</li>
+                        <li>✓ 双人成行存档特权</li>
+                        <li>✓ 未来规划建议否决权</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div id="content-stage-final" class="content-stage">
+            <div class="success-message">
+                <div class="heart"></div>
+                <div class="message show" style="font-size: 30px; margin-top: 30px;">
+                    太好了！我们在一起吧！❤️
+                </div>
+                <div class="date-counter">
+                    <span id="current-date"></span><br>
+                    让我们的爱情故事从这一刻开始
+                </div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button id="nextBtn" class="next-btn">继续了解</button>
+            <button id="yesBtn">好呀</button>
+            <button id="noBtn" class="initial">再想想</button>
+        </div>
+    </div>
+    <div class="dodge-container"></div>
+    <script src="script.js"></script>
+</body>
+</html> 
