@@ -4,46 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>给小明的告白信</title>
-    <link rel="preload" href="style.css" as="style">
-    <link rel="preload" href="background-music.mp3" as="audio" fetchpriority="high">
-    <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
-    <link rel="stylesheet" href="style.css">
+    <!-- 优化关键CSS内联 -->
+    <style>
+        .content-stage {display: none;}
+        .content-stage.active {display: block;}
+        .final-note {text-align: center; margin-top: 30px; color: #ff4d6d; font-size: 16px; font-style: italic;}
+        body {opacity: 1; margin: 0; padding: 20px 0; min-height: 100vh; display: flex; justify-content: center; align-items: center; background: linear-gradient(45deg, #ffb6c1, #ffc0cb); font-family: "Microsoft YaHei", sans-serif; overflow-y: auto;}
+        @keyframes fadeIn {from {opacity: 0;} to {opacity: 1;}}
+        .music-control {position: fixed; top: 15px; right: 15px; width: 40px; height: 40px; background-color: rgba(255, 255, 255, 0.9); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); z-index: 1000; transition: all 0.3s ease;}
+        .music-control i {color: #ff4d6d; font-size: 20px;}
+        .backup-play-button {position: fixed; bottom: 15px; right: 15px; background-color: #ff4d6d; color: white; padding: 10px 15px; border-radius: 25px; font-size: 15px; cursor: pointer; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); z-index: 1000; transition: all 0.3s ease; opacity: 0; transform: translateY(20px); pointer-events: none;}
+        .backup-play-button.show {opacity: 1; transform: translateY(0); pointer-events: auto;}
+    </style>
+    <!-- 音频资源优先加载 -->
+    <link rel="preload" href="background-music.mp3" as="audio" type="audio/mpeg" fetchpriority="high">
+    <!-- 延迟加载非关键CSS -->
+    <link rel="preload" href="style.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="style.css"></noscript>
     <meta name="description" content="一封充满爱意的电子情书">
     <meta name="theme-color" content="#ff69b4">
     <meta name="robots" content="noindex, nofollow">
     <meta property="og:title" content="给小明的告白信">
     <meta property="og:description" content="一封充满爱意的电子情书">
     <meta property="og:type" content="website">
-    <style>
-        .content-stage {
-            display: none;
-        }
-        .content-stage.active {
-            display: block;
-        }
-        .final-note {
-            text-align: center;
-            margin-top: 30px;
-            color: #ff4d6d;
-            font-size: 16px;
-            font-style: italic;
-        }
-        
-        /* 优化关键CSS内联 */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        body { opacity: 1; }
-    </style>
 </head>
 <body>
     <div class="floating-hearts" aria-hidden="true"></div>
     <div class="music-control" id="musicControl" title="播放/暂停音乐">
         <i>♫</i>
     </div>
-    <audio id="bgMusic" loop preload="auto">
+    <audio id="bgMusic" loop preload="auto" fetchpriority="high">
         <source src="background-music.mp3" type="audio/mpeg">
+        <source src="background-music.mp3" type="audio/mp3">
     </audio>
     <div class="backup-play-button" id="backupPlayButton">点击播放音乐</div>
     <div class="container">
@@ -163,13 +155,13 @@
                 <div class="left-buttons">
                     <div class="grid-button">
                         <h3>时刻标记</h3>
-                        <p>标记重要日子，如纪念日，开心日等，点击可查看当时的记录和回忆。</p>
+                        <p>标记重要日子，如纪念日，开心日等，点击可查看当时的记录和回忆</p>
                         <button class="feature-button" data-action="moments">查看详情</button>
                     </div>
                     
                     <div class="grid-button">
                         <h3>电影推荐</h3>
-                        <p>输入类别，推荐我喜欢的电影，有几率解锁电影院门票</p>
+                        <p>输入类别，推荐我喜欢的电影，有几率解锁电影门票</p>
                         <button class="feature-button" data-action="movies">查看详情</button>
                     </div>
                     
@@ -189,7 +181,7 @@
                     
                     <div class="grid-button">
                         <h3>窃听心声</h3>
-                        <p>匿名提问，限时获取对方真心话</p>
+                        <p>开启真诚问答，倾听对方心声</p>
                         <button class="feature-button" data-action="whispers">查看详情</button>
                     </div>
                     
@@ -217,18 +209,20 @@
                     <h2>未完待续...</h2>
                     <p>我相信，我们的故事才刚刚开始...</p>
                     <div class="future-image"></div>
-                    <p>期待与你的每一个明天</p>
+                    <p class="no-italic">期待与你的每一个明天</p>
                     <div class="final-quote">
                         My love for you will never fade
                     </div>
                     <div class="commitment">
                         如果可以，本网站将持续更新并永久运行
                     </div>
-                    <div class="signature-name">
-                        ——眭时康
-                    </div>
-                    <div class="signature-date">
-                        2025.6.20
+                    <div class="signature-block">
+                        <div class="signature-name">
+                            ——眭时康
+                        </div>
+                        <div class="signature-date">
+                            2025.6.20
+                        </div>
                     </div>
                 </div>
             </div>
