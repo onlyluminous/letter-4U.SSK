@@ -1,0 +1,23 @@
+# GitHub Pages 配置
+lsi: false
+safe: true
+source: .
+incremental: false
+highlighter: rouge
+gist:
+  noscript: false
+kramdown:
+  math_engine: mathjax
+  syntax_highlighter: rouge
+
+# 媒体文件类型
+include:
+  - "*.mp3"
+  - "*.mp4"
+  - "*.ogg"
+  - "*.webm"
+
+# 网站设置
+title: 给小明的告白信
+description: 一封充满爱意的电子情书
+baseurl: "" 
