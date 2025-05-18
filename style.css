@@ -6,9 +6,10 @@
 }
 
 /* 添加GPU加速 */
-.heart, .message.show, .floating-heart, .music-rotating, .firework, .moving {
+.heart, .message.show, .floating-heart, .music-rotating, .music-loading, .firework, .moving {
     will-change: transform;
     transform: translateZ(0);
+    backface-visibility: hidden;
 }
 
 html, body {
@@ -20,7 +21,7 @@ html, body {
 /* 优化body性能 */
 body {
     margin: 0;
-    padding: 20px 0;
+    padding: 10px;
     min-height: 100vh;
     min-height: -webkit-fill-available;
     display: flex;
@@ -32,38 +33,39 @@ body {
     touch-action: pan-y pinch-zoom;
     -webkit-font-smoothing: antialiased;
     /* 启用优化绘制 */
-    contain: layout paint;
+    contain: layout paint style;
+    text-rendering: optimizeSpeed;
 }
 
 .container {
     text-align: center;
     position: relative;
-    padding: 30px;
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 20px;
+    padding: 25px;
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: 30px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     width: 90%;
-    max-width: 600px;
+    max-width: 450px;
+    min-height: 85vh;
     margin: auto;
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
+    contain: content;
+    aspect-ratio: 0.55;
 }
 
 @media (max-width: 480px) {
     body {
         padding: 15px 0;
-        min-height: 100vh;
-        min-height: -webkit-fill-available;
-        display: flex;
-        align-items: center;
-        justify-content: center;
     }
     
     .container {
         padding: 20px;
         margin: 0 auto;
         width: 92%;
-        max-height: 90vh;
+        min-height: 90vh;
+        max-height: none;
+        border-radius: 20px;
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
     }
@@ -94,6 +96,15 @@ body {
         font-size: 16px !important;
         margin: 8px 0 !important;
         padding-right: 10px !important;
+    }
+}
+
+/* 添加竖屏手机专用样式 */
+@media (max-width: 480px) and (orientation: portrait) {
+    .container {
+        min-height: 85vh;
+        max-height: 90vh;
+        aspect-ratio: 0.55;
     }
 }
 
@@ -168,6 +179,26 @@ body {
     transform: translateY(0);
 }
 
+.message-container p {
+    line-height: 1.6;
+    margin-bottom: 15px;
+    color: #444;
+}
+
+.message-container p:last-of-type {
+    font-style: italic;
+    color: #ff85a1;
+    margin-top: 20px;
+}
+
+.message-container p.no-italic {
+    font-style: normal;
+    color: #ff4d6d;
+    font-size: 20px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
 .button-container {
     margin-top: 30px;
     position: relative;
@@ -197,7 +228,7 @@ button {
     border: none;
     border-radius: 25px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
     position: relative;
     overflow: hidden;
     -webkit-tap-highlight-color: transparent;
@@ -217,7 +248,6 @@ button {
     border: 2px solid #ff4d6d;
     box-shadow: 0 5px 15px rgba(255, 77, 109, 0.2);
     min-width: 120px;
-    transition: all 0.3s ease;
     pointer-events: auto;
     z-index: 9999;
 }
@@ -252,6 +282,7 @@ button:active {
     pointer-events: none;
     border-radius: 50%;
     z-index: 999;
+    will-change: transform;
 }
 
 .floating-hearts {
@@ -263,6 +294,7 @@ button:active {
     pointer-events: none;
     z-index: -1;
     opacity: 0.6;
+    contain: strict;
 }
 
 .floating-heart {
@@ -271,6 +303,7 @@ button:active {
     font-size: 20px;
     animation: float 8s linear infinite;
     opacity: 0.4;
+    will-change: transform, opacity;
 }
 
 @keyframes float {
@@ -336,7 +369,7 @@ button:active {
     cursor: pointer;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     z-index: 1000;
-    transition: all 0.3s ease;
+    transition: transform 0.3s ease;
 }
 
 .music-control:hover {
@@ -353,8 +386,23 @@ button:active {
     to { transform: rotate(360deg); }
 }
 
+@keyframes music-pulse {
+    0% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(0.95); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
 .music-rotating {
     animation: rotate 6s linear infinite;
+}
+
+.music-loading {
+    animation: music-pulse 1.2s ease-in-out infinite, rotate 6s linear infinite;
+    opacity: 0.7;
+}
+
+.music-loading i {
+    color: #ff85a1;
 }
 
 .backup-play-button {
@@ -369,7 +417,7 @@ button:active {
     cursor: pointer;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     z-index: 1000;
-    transition: all 0.3s ease;
+    transition: opacity 0.3s ease, transform 0.3s ease;
     opacity: 0;
     transform: translateY(20px);
     pointer-events: none;
@@ -425,17 +473,18 @@ button:active {
     color: #444;
 }
 
+/* 优化动画延迟 */
 .privilege-list li:nth-child(1) { animation-delay: 0.2s; }
 .privilege-list li:nth-child(2) { animation-delay: 0.4s; }
 .privilege-list li:nth-child(3) { animation-delay: 0.6s; }
 .privilege-list li:nth-child(4) { animation-delay: 0.8s; }
 .privilege-list li:nth-child(5) { animation-delay: 1s; }
 
-.growth-list li:nth-child(1) { animation-delay: 1.2s; }
-.growth-list li:nth-child(2) { animation-delay: 1.4s; }
-.growth-list li:nth-child(3) { animation-delay: 1.6s; }
-.growth-list li:nth-child(4) { animation-delay: 1.8s; }
-.growth-list li:nth-child(5) { animation-delay: 2s; }
+.growth-list li:nth-child(1) { animation-delay: 0.2s; }
+.growth-list li:nth-child(2) { animation-delay: 0.3s; }
+.growth-list li:nth-child(3) { animation-delay: 0.4s; }
+.growth-list li:nth-child(4) { animation-delay: 0.5s; }
+.growth-list li:nth-child(5) { animation-delay: 0.6s; }
 
 .agreement-list li:nth-child(1) { animation-delay: 0.2s; }
 .agreement-list li:nth-child(2) { animation-delay: 0.4s; }
@@ -445,8 +494,8 @@ button:active {
 
 h2 {
     color: #ff4d6d;
-    margin: 20px 0 10px;
-    font-size: 22px;
+    margin: 20px 0 15px;
+    font-size: 24px;
 }
 
 /* 移动端优化 */
@@ -461,7 +510,7 @@ h2 {
     }
 }
 
-/* 更多内容按钮 */
+/* 优化按钮样式 */
 .more-content {
     margin-top: 30px;
 }
@@ -474,7 +523,7 @@ h2 {
     padding: 10px 25px;
     border-radius: 25px;
     font-size: 16px;
-    transition: all 0.3s ease;
+    transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
     box-shadow: 0 5px 15px rgba(255, 77, 109, 0.3);
 }
 
@@ -484,38 +533,8 @@ h2 {
     box-shadow: 0 8px 20px rgba(255, 77, 109, 0.4);
 }
 
-/* 水印样式 */
-.watermark {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: -1;
-    background-image: repeating-linear-gradient(
-        45deg,
-        transparent,
-        transparent 150px,
-        #ff4d6d20 150px,
-        #ff4d6d20 300px
-    );
-}
-
-.watermark::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial, STHeiti, SimHei' font-size='24' font-weight='bold' fill='%23ff4d6d60' transform='rotate(-30 75 75)'%3E小明♡%3C/text%3E%3C/svg%3E");
-    background-repeat: repeat;
-    background-size: 180px 180px;
-    opacity: 0.4;
-}
-
-/* 混合水印样式 */
+/* 优化水印渲染性能 */
+.watermark,
 .mixed-watermark {
     position: absolute;
     top: 0;
@@ -528,11 +547,13 @@ h2 {
         45deg,
         transparent,
         transparent 150px,
-        #ff4d6d20 150px,
-        #ff4d6d20 300px
+        rgba(255, 77, 109, 0.125) 150px,
+        rgba(255, 77, 109, 0.125) 300px
     );
+    contain: paint;
 }
 
+.watermark::before,
 .mixed-watermark::before {
     content: '';
     position: absolute;
@@ -540,10 +561,18 @@ h2 {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240'%3E%3Ctext x='50%25' y='40%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial, STHeiti, SimHei' font-size='22' font-weight='bold' fill='%23ff4d6d60' transform='rotate(-30 120 120)'%3E小明♡眭时康%3C/text%3E%3Ctext x='50%25' y='70%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial, STHeiti, SimHei' font-size='22' font-weight='bold' fill='%23ff4d6d60' transform='rotate(-30 120 120)'%3E眭时康♡小明%3C/text%3E%3C/svg%3E");
     background-repeat: repeat;
-    background-size: 240px 240px;
     opacity: 0.4;
+}
+
+.watermark::before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial, STHeiti, SimHei' font-size='24' font-weight='bold' fill='%23ff4d6d60' transform='rotate(-30 75 75)'%3E小明♡%3C/text%3E%3C/svg%3E");
+    background-size: 180px 180px;
+}
+
+.mixed-watermark::before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240'%3E%3Ctext x='50%25' y='40%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial, STHeiti, SimHei' font-size='22' font-weight='bold' fill='%23ff4d6d60' transform='rotate(-30 120 120)'%3E小明♡眭时康%3C/text%3E%3Ctext x='50%25' y='70%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial, STHeiti, SimHei' font-size='22' font-weight='bold' fill='%23ff4d6d60' transform='rotate(-30 120 120)'%3E眭时康♡小明%3C/text%3E%3C/svg%3E");
+    background-size: 240px 240px;
 }
 
 /* 页面标题 */
@@ -553,7 +582,7 @@ h1 {
     margin: 20px 0;
 }
 
-/* 按钮网格布局 */
+/* 优化按钮网格布局 */
 .buttons-grid {
     display: flex;
     gap: 20px;
@@ -567,13 +596,21 @@ h1 {
     gap: 15px;
 }
 
+/* 统一按钮过渡效果 */
+.grid-button,
+.link-item,
+.link-button,
+.feature-button,
+.nav-button {
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
 /* 网格按钮样式 */
 .grid-button {
     background-color: #fff;
     border-radius: 15px;
     padding: 15px;
     box-shadow: 0 5px 15px rgba(255, 77, 109, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
     text-align: left;
 }
 
@@ -603,7 +640,6 @@ h1 {
     border-radius: 20px;
     cursor: pointer;
     font-size: 13px;
-    transition: background-color 0.3s ease;
 }
 
 .feature-button:hover {
@@ -626,7 +662,6 @@ h1 {
     padding: 20px;
     box-shadow: 0 5px 15px rgba(255, 77, 109, 0.1);
     border-left: 4px solid #ff4d6d;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .link-item:hover {
@@ -655,7 +690,6 @@ h1 {
     border-radius: 20px;
     cursor: pointer;
     font-size: 14px;
-    transition: background-color 0.3s ease;
 }
 
 .link-button:hover {
@@ -668,6 +702,11 @@ h1 {
     justify-content: space-between;
     margin-top: 30px;
     gap: 15px;
+    position: absolute;
+    bottom: 25px;
+    left: 0;
+    right: 0;
+    padding: 0 25px;
 }
 
 .nav-button {
@@ -676,7 +715,6 @@ h1 {
     text-decoration: none;
     border-radius: 25px;
     cursor: pointer;
-    transition: all 0.3s ease;
     display: inline-block;
     text-align: center;
 }
@@ -684,7 +722,8 @@ h1 {
 .back-btn {
     background-color: #ffffff;
     color: #ff4d6d;
-    border: 2px solid #ff4d6d;
+    border: 1px solid #ff4d6d;
+    width: 80px;
 }
 
 .next-btn, .home-btn {
@@ -705,7 +744,8 @@ h1 {
     font-size: 16px;
     z-index: 1100;
     opacity: 0;
-    transition: all 0.3s ease;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    will-change: transform, opacity;
 }
 
 .toast.show {
@@ -739,15 +779,15 @@ h1 {
     }
 }
 
-/* 未来页面的图片 */
+/* 未来页面的图片 - 使用SVG优化加载 */
 .future-image {
-    width: 100%;
-    height: 200px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Ccircle cx='100' cy='100' r='80' fill='%23ffb6c1' /%3E%3Cpath d='M100,20 C70,20 40,40 30,70 C20,100 30,140 60,160 C90,180 130,170 160,140 C190,110 190,60 160,40 C140,20 120,20 100,20 Z' fill='%23ff4d6d' opacity='0.7' /%3E%3C/svg%3E");
+    width: 150px;
+    height: 150px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Ccircle cx='100' cy='100' r='80' fill='%23ff6b8b' /%3E%3Cpath d='M100,20 C70,20 40,40 30,70 C20,100 30,140 60,160 C90,180 130,170 160,140 C190,110 190,60 160,40 C140,20 120,20 100,20 Z' fill='%23ff4d6d' opacity='0.7' /%3E%3C/svg%3E");
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
-    margin: 20px 0;
+    margin: 15px auto;
 }
 
 /* 英文结束语 */
@@ -755,14 +795,42 @@ h1 {
     font-family: 'Times New Roman', serif;
     font-style: italic;
     color: #ff4d6d;
-    font-size: 20px;
+    font-size: 22px;
     margin-top: 25px;
     margin-bottom: 20px;
     font-weight: 500;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
     text-align: center;
     animation: fadeIn 1.5s ease-in-out;
     text-shadow: 0 1px 3px rgba(255, 77, 109, 0.2);
+    position: relative;
+    display: inline-block;
+}
+
+.final-quote:before,
+.final-quote:after {
+    content: '"';
+    position: relative;
+    color: rgba(255, 77, 109, 0.6);
+}
+
+.final-quote:before {
+    margin-right: 6px;
+}
+
+.final-quote:after {
+    margin-left: 6px;
+}
+
+/* 简化类似元素的样式 */
+.commitment,
+.signature-name,
+.signature-date {
+    text-align: center;
+    animation-name: fadeIn;
+    animation-fill-mode: forwards;
+    font-style: italic;
+    letter-spacing: 1px;
 }
 
 /* 承诺语 */
@@ -771,38 +839,64 @@ h1 {
     font-size: 16px;
     font-weight: normal;
     margin-top: 40px;
-    text-align: center;
-    animation: fadeIn 2s ease-in-out;
+    animation-duration: 2s;
+    animation-timing-function: ease-in-out;
     padding: 0 15px;
+    text-shadow: 0 1px 2px rgba(255, 133, 161, 0.2);
+    position: relative;
+    display: inline-block;
+}
+
+.commitment:before,
+.commitment:after {
+    content: "❤";
+    color: rgba(255, 77, 109, 0.3);
+    font-size: 12px;
+    position: relative;
+    top: -5px;
+    margin: 0 8px;
+}
+
+/* 签名区块样式 */
+.signature-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-top: 10px;
+    margin-right: 10px;
+    position: relative;
+}
+
+.signature-block:before {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    right: 0;
+    width: 100px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(255, 77, 109, 0.5));
 }
 
 /* 签名-名字 */
 .signature-name {
     color: #ff4d6d;
-    font-size: 16px;
-    font-style: italic;
+    font-size: 18px;
+    margin-top: 5px;
+    margin-right: 0;
+    margin-bottom: 2px;
+    animation-duration: 2.5s;
+    animation-timing-function: ease-in-out;
     text-align: right;
-    margin-top: 12px;
-    margin-right: 15px;
-    margin-bottom: 4px;
-    animation: fadeIn 2.5s ease-in-out;
+    text-shadow: 0 1px 3px rgba(255, 77, 109, 0.2);
 }
 
 /* 签名-日期 */
 .signature-date {
     color: #999;
-    font-size: 14px;
+    font-size: 15px;
+    margin-right: 0;
+    margin-bottom: 0;
+    animation-duration: 2.8s;
+    animation-timing-function: ease-in-out;
     text-align: right;
-    margin-right: 15px;
-    margin-bottom: 10px;
-    animation: fadeIn 2.8s ease-in-out;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
 } 
